@@ -67,9 +67,10 @@ require_once($CFG->dirroot . '/mod/ojt/locallib.php');
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed true if the feature is supported, null if unknown
  */
-function ojt_supports($feature) {
+function ojt_supports($feature)
+{
 
-    switch($feature) {
+    switch ($feature) {
         case FEATURE_MOD_INTRO:
             return true;
         case FEATURE_SHOW_DESCRIPTION:
@@ -143,7 +144,8 @@ function ojt_update_instance(stdClass $ojt, mod_ojt_mod_form $mform = null)
  * @param int $id Id of the module instance
  * @return boolean Success/Failure
  */
-function ojt_delete_instance($id) {
+function ojt_delete_instance($id)
+{
     global $DB;
 
     if (!$ojt = $DB->get_record('ojt', array('id' => $id))) {
@@ -164,7 +166,7 @@ function ojt_delete_instance($id) {
     // Delete comments
     $topics = $DB->get_records('ojt_topic', array('ojtid' => $ojt->id));
     foreach ($topics as $topic) {
-        $DB->delete_records('comments', array('commentarea' => 'ojt_topic_item_'.$topic->id));
+        $DB->delete_records('comments', array('commentarea' => 'ojt_topic_item_' . $topic->id));
     }
 
     // Delete topic items
@@ -195,7 +197,8 @@ function ojt_delete_instance($id) {
  * @param stdClass $ojt The ojt instance record
  * @return stdClass|null
  */
-function ojt_user_outline($course, $user, $mod, $ojt) {
+function ojt_user_outline($course, $user, $mod, $ojt)
+{
 
     $return = new stdClass();
     $return->time = 0;
@@ -813,6 +816,8 @@ class mod_ojt_plugin
             if (isset($ojtTopicItem['ojt_task_completion_optional'])) {
                 $tempTopicItem->completionreq = $ojtTopicItem['ojt_task_completion_optional'];;
             }
+            $tempTopicItem->allowfileuploads = 1;
+            $tempTopicItem->allowselffileuploads = 1;
             if (isset($ojtTopicItem['ojt_task_fileuploads'])) {
                 $tempTopicItem->allowfileuploads = $ojtTopicItem['ojt_task_fileuploads'];;
             }
@@ -891,6 +896,7 @@ class mod_ojt_plugin
                 $enrol->enrol_user($instance, $userobject->id, 5);
             }
         }
+
         return $usersarray;
     }
 
@@ -914,35 +920,40 @@ class mod_ojt_plugin
         global $DB, $USER;
 
         foreach ($ojtTopics as $ojtTopic) {
-            $userid = $usersarray[$ojtTopic['username']];
+            $userid = '';
             $ojtid = $ojt->id;
             $topicid = $ojtTopicObject->id;
             $topicitemid = $topicItemsArray[$ojtTopic['ojt_task']];
-            $params = array('userid' => $userid,
-                'ojtid' => $ojtid,
-                'topicid' => $topicid,
-                'topicitemid' => $topicitemid,
-                'type' => OJT_CTYPE_TOPICITEM);
-            $completionStatus = OJT_INCOMPLETE;
-            if (isset($ojtTopic['completion']) && $ojtTopic['completion']) {
-                $completionStatus = OJT_COMPLETE;
+            if(isset($usersarray[$ojtTopic['username']])){
+                $userid = $usersarray[$ojtTopic['username']];  
             }
 
-            if ($completion = $DB->get_record('ojt_completion', $params)) {
-                $completion->status = $completionStatus;
-                $completion->timemodified = time();
-                $completion->modifiedby = $USER->id;
-                $DB->update_record('ojt_completion', $completion);
-            } else {
-                $completion = (object)$params;
-                $completion->status = $completionStatus;
-                $completion->timemodified = time();
-                $completion->modifiedby = $USER->id;
-                $completion->id = $DB->insert_record('ojt_completion', $completion);
+            if ($userid && $ojtid && $topicid && $topicitemid) {
+                $params = array('userid' => $userid,
+                    'ojtid' => $ojtid,
+                    'topicid' => $topicid,
+                    'topicitemid' => $topicitemid,
+                    'type' => OJT_CTYPE_TOPICITEM);
+                $completionStatus = OJT_INCOMPLETE;
+                if (isset($ojtTopic['completion']) && $ojtTopic['completion']) {
+                    $completionStatus = OJT_COMPLETE;
+                }
+
+                if ($completion = $DB->get_record('ojt_completion', $params)) {
+                    $completion->status = $completionStatus;
+                    $completion->timemodified = time();
+                    $completion->modifiedby = $USER->id;
+                    $DB->update_record('ojt_completion', $completion);
+                } else {
+                    $completion = (object)$params;
+                    $completion->status = $completionStatus;
+                    $completion->timemodified = time();
+                    $completion->modifiedby = $USER->id;
+                    $completion->id = $DB->insert_record('ojt_completion', $completion);
+                }
+                ojt_update_topic_completion($userid, $ojtid, $topicid);
             }
 
-
-            ojt_update_topic_completion($userid, $ojtid, $topicid);
         }
 
     }
