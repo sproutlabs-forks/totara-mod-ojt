@@ -53,6 +53,10 @@ define('OJT_COMPLETE', 2);
 define('OJT_REQUIRED', 0);
 define('OJT_OPTIONAL', 1);
 
+require_once("{$CFG->dirroot}/lib/navigationlib.php");
+require_once("{$CFG->dirroot}/lib/enrollib.php");
+require_once($CFG->dirroot . '/course/lib.php');
+require_once($CFG->dirroot . '/mod/ojt/locallib.php');
 /* Moodle core API */
 
 /**
@@ -91,7 +95,8 @@ function ojt_supports($feature) {
  * @param mod_ojt_mod_form $mform The form instance itself (if needed)
  * @return int The id of the newly inserted ojt record
  */
-function ojt_add_instance(stdClass $ojt, mod_ojt_mod_form $mform = null) {
+function ojt_add_instance(stdClass $ojt, mod_ojt_mod_form $mform = null)
+{
     global $DB;
 
     $ojt->timecreated = time();
@@ -114,7 +119,8 @@ function ojt_add_instance(stdClass $ojt, mod_ojt_mod_form $mform = null) {
  * @param mod_ojt_mod_form $mform The form instance itself (if needed)
  * @return boolean Success/Fail
  */
-function ojt_update_instance(stdClass $ojt, mod_ojt_mod_form $mform = null) {
+function ojt_update_instance(stdClass $ojt, mod_ojt_mod_form $mform = null)
+{
     global $DB;
 
     $ojt->timemodified = time();
@@ -208,7 +214,8 @@ function ojt_user_outline($course, $user, $mod, $ojt) {
  * @param cm_info $mod course module info
  * @param stdClass $ojt the module instance record
  */
-function ojt_user_complete($course, $user, $mod, $ojt) {
+function ojt_user_complete($course, $user, $mod, $ojt)
+{
 }
 
 /**
@@ -217,7 +224,8 @@ function ojt_user_complete($course, $user, $mod, $ojt) {
  * @param object $cm Course-module
  * @return array Requirements for completion
  */
-function ojt_get_completion_requirements($cm) {
+function ojt_get_completion_requirements($cm)
+{
     global $DB;
 
     $ojt = $DB->get_record('ojt', array('id' => $cm->instance));
@@ -234,11 +242,12 @@ function ojt_get_completion_requirements($cm) {
 /**
  * Obtains the completion progress.
  *
- * @param object $cm      Course-module
- * @param int    $userid  User ID
+ * @param object $cm Course-module
+ * @param int $userid User ID
  * @return string The current status of completion for the user
  */
-function ojt_get_completion_progress($cm, $userid) {
+function ojt_get_completion_progress($cm, $userid)
+{
     global $DB;
 
     // Get ojt details.
@@ -270,7 +279,8 @@ function ojt_get_completion_progress($cm, $userid) {
  * @return bool True if completed, false if not. (If no conditions, then return
  *   value depends on comparison type)
  */
-function ojt_get_completion_state($course, $cm, $userid, $type) {
+function ojt_get_completion_state($course, $cm, $userid, $type)
+{
     global $DB;
 
     // Get ojt.
@@ -304,7 +314,8 @@ function ojt_get_completion_state($course, $cm, $userid, $type) {
  * @param int $userid check for a particular user's activity only, defaults to 0 (all users)
  * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
  */
-function ojt_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
+function ojt_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0)
+{
 }
 
 /**
@@ -316,7 +327,8 @@ function ojt_get_recent_mod_activity(&$activities, &$index, $timestart, $coursei
  * @param array $modnames as returned by {@link get_module_types_names()}
  * @param bool $viewfullnames display users' full names
  */
-function ojt_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
+function ojt_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames)
+{
 }
 
 /**
@@ -324,10 +336,11 @@ function ojt_print_recent_mod_activity($activity, $courseid, $detail, $modnames,
  *
  * @return boolean
  */
-function ojt_cron () {
+function ojt_cron()
+{
     global $CFG, $DB;
 
-    require_once($CFG->dirroot.'/totara/message/messagelib.php');
+    require_once($CFG->dirroot . '/totara/message/messagelib.php');
 
     $lastcron = $DB->get_field('modules', 'lastcron', array('name' => 'ojt'));
 
@@ -382,7 +395,8 @@ function ojt_cron () {
  *
  * @return array
  */
-function ojt_get_extra_capabilities() {
+function ojt_get_extra_capabilities()
+{
     return array(
         'mod/ojt:evaluate',
         'mod/ojt:signoff',
@@ -404,15 +418,13 @@ function ojt_get_extra_capabilities() {
  * @param stdClass $context
  * @return array of [(string)filearea] => (string)description
  */
-function ojt_get_file_areas($course, $cm, $context) {
+function ojt_get_file_areas($course, $cm, $context)
+{
     return array();
 }
 
 /**
  * File browsing support for ojt file areas
- *
- * @package mod_ojt
- * @category files
  *
  * @param file_browser $browser
  * @param array $areas
@@ -424,16 +436,17 @@ function ojt_get_file_areas($course, $cm, $context) {
  * @param string $filepath
  * @param string $filename
  * @return file_info instance or null if not found
+ * @package mod_ojt
+ * @category files
+ *
  */
-function ojt_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
+function ojt_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename)
+{
     return null;
 }
 
 /**
  * Serves the files from the ojt file areas
- *
- * @package mod_ojt
- * @category files
  *
  * @param stdClass $course the course object
  * @param stdClass $cm the course module object
@@ -442,8 +455,12 @@ function ojt_get_file_info($browser, $areas, $course, $cm, $context, $filearea, 
  * @param array $args extra arguments (itemid, path)
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
+ * @category files
+ *
+ * @package mod_ojt
  */
-function ojt_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options=array()) {
+function ojt_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array())
+{
     global $DB, $CFG, $USER;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -453,7 +470,7 @@ function ojt_pluginfile($course, $cm, $context, $filearea, array $args, $forcedo
     require_login($course, true, $cm);
 
     $userid = $args[0];
-    require_once($CFG->dirroot.'/mod/ojt/locallib.php');
+    require_once($CFG->dirroot . '/mod/ojt/locallib.php');
     if (!(ojt_can_evaluate($userid, $context) || $userid == $USER->id)) {
         // Only evaluators and/or owners have access to files
         return false;
@@ -482,7 +499,8 @@ function ojt_pluginfile($course, $cm, $context, $filearea, array $args, $forcedo
  * @param stdClass $module current ojt instance record
  * @param cm_info $cm course module information
  */
-function ojt_extend_navigation(navigation_node $navref, stdClass $course, stdClass $module, cm_info $cm) {
+function ojt_extend_navigation(navigation_node $navref, stdClass $course, stdClass $module, cm_info $cm)
+{
     $context = context_module::instance($cm->id);
     if (has_capability('mod/ojt:evaluate', $context) || has_capability('mod/ojt:signoff', $context)) {
         $link = new moodle_url('/mod/ojt/report.php', array('cmid' => $cm->id));
@@ -500,23 +518,24 @@ function ojt_extend_navigation(navigation_node $navref, stdClass $course, stdCla
  * @param settings_navigation $settingsnav complete settings navigation tree
  * @param navigation_node $ojtnode ojt administration node
  */
-function ojt_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $ojtnode=null) {
+function ojt_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $ojtnode = null)
+{
     global $PAGE;
 
     if (has_capability('mod/ojt:evaluate', $PAGE->cm->context) || has_capability('mod/ojt:signoff', $PAGE->cm->context)) {
         $link = new moodle_url('/mod/ojt/report.php', array('cmid' => $PAGE->cm->id));
         $node = navigation_node::create(get_string('evaluatestudents', 'ojt'),
-                new moodle_url('/mod/ojt/report.php', array('cmid' => $PAGE->cm->id)),
-                navigation_node::TYPE_SETTING, null, 'mod_ojt_evaluate',
-                new pix_icon('i/valid', ''));
+            new moodle_url('/mod/ojt/report.php', array('cmid' => $PAGE->cm->id)),
+            navigation_node::TYPE_SETTING, null, 'mod_ojt_evaluate',
+            new pix_icon('i/valid', ''));
         $ojtnode->add_node($node);
     }
 
     if (has_capability('mod/ojt:manage', $PAGE->cm->context)) {
         $node = navigation_node::create(get_string('edittopics', 'ojt'),
-                new moodle_url('/mod/ojt/manage.php', array('cmid' => $PAGE->cm->id)),
-                navigation_node::TYPE_SETTING, null, 'mod_ojt_manage',
-                new pix_icon('t/edit', ''));
+            new moodle_url('/mod/ojt/manage.php', array('cmid' => $PAGE->cm->id)),
+            navigation_node::TYPE_SETTING, null, 'mod_ojt_manage',
+            new pix_icon('t/edit', ''));
         $ojtnode->add_node($node);
     }
 }
@@ -530,9 +549,6 @@ function ojt_extend_settings_navigation(settings_navigation $settingsnav, naviga
 /**
  * Validate comment parameters, before other comment actions are performed
  *
- * @package  block_comments
- * @category comment
- *
  * @param stdClass $comment_param {
  *              context  => context the context object
  *              courseid => int course id
@@ -541,8 +557,12 @@ function ojt_extend_settings_navigation(settings_navigation $settingsnav, naviga
  *              itemid      => int itemid
  * }
  * @return boolean
+ * @package  block_comments
+ * @category comment
+ *
  */
-function ojt_comment_validate($comment_param) {
+function ojt_comment_validate($comment_param)
+{
     if (!strstr($comment_param->commentarea, 'ojt_topic_item_')) {
         throw new comment_exception('invalidcommentarea');
     }
@@ -556,24 +576,26 @@ function ojt_comment_validate($comment_param) {
 /**
  * Running addtional permission check on plugins
  *
+ * @param stdClass $args
+ * @return array
  * @package  block_comments
  * @category comment
  *
- * @param stdClass $args
- * @return array
  */
-function ojt_comment_permissions($args) {
+function ojt_comment_permissions($args)
+{
     global $CFG;
-    require_once($CFG->dirroot.'/mod/ojt/locallib.php');
+    require_once($CFG->dirroot . '/mod/ojt/locallib.php');
 
     if (!ojt_can_evaluate($args->itemid, $args->context)) {
-        return array('post'=>false, 'view'=>true);
+        return array('post' => false, 'view' => true);
     }
 
-    return array('post'=>true, 'view'=>true);
+    return array('post' => true, 'view' => true);
 }
 
-function ojt_comment_template() {
+function ojt_comment_template()
+{
     global $OUTPUT, $PAGE;
 
     // Use the totara default comment template
@@ -581,4 +603,375 @@ function ojt_comment_template() {
 
     return $renderer->comment_template();
 }
+
+function ojt_extend_navigation_course($navigation, $course, $context)
+{
+    global $CFG, $PAGE;
+    $courseid = $PAGE->course->id;
+
+    $url = new moodle_url('/mod/ojt/importtopics.php', array('id' => $courseid));
+    $navigation->add(get_string('topicimporttitle', 'ojt'), $url, navigation_node::TYPE_USER, null, null, new pix_icon('i/import', ''));
+
+    $usercompletionurl = new moodle_url('/mod/ojt/importusercompletion.php', array('id' => $courseid));
+    $navigation->add(get_string('usercompletiontitle', 'ojt'), $usercompletionurl, navigation_node::TYPE_USER, null, null, new pix_icon('i/import', ''));
+
+}
+
+class mod_ojt_plugin
+{
+
+    /*
+     * Class constants
+     */
+
+    /**
+     * @const string    Reduce chance of typos.
+     */
+    const PLUGIN_NAME = 'mod_ojt';
+
+    const SECTION_POSITION = 0;
+
+    /**
+     * @const string    Form id for filepicker form element.
+     */
+    const FORMID_FILES = 'filepicker';
+
+    /**
+     * @var array
+     */
+    private static $user_id_field_options = null;
+
+
+    /*
+     * Methods
+     */
+
+    /**
+     * Return list of valid options for user record field matching
+     *
+     * @return array
+     */
+    public static function get_user_id_field_options()
+    {
+
+        if (self::$user_id_field_options == null) {
+            self::$user_id_field_options = array(
+                'username' => get_string('username'),
+                'email' => get_string('email'),
+                'idnumber' => get_string('idnumber')
+            );
+        }
+
+        return self::$user_id_field_options;
+
+    }
+
+    public static function import_topic_file(stdClass $course, stored_file $import_file)
+    {
+        global $DB;
+        // Default return value
+        $result = '';
+        // Open and fetch the file contents
+        $fh = $import_file->get_content_file_handle();
+
+        $csv = array();
+        $i = 0;
+        if ($fh) {
+            $columns = fgetcsv($fh, '', ",");
+            while (($row = fgetcsv($fh, '', ",")) !== false) {
+                $csv[$i] = array_combine($columns, $row);
+                $i++;
+            }
+            fclose($fh);
+        }
+
+
+        $temptopics = array_unique(array_column($csv, 'ojt_topic'));
+        $topics = array_intersect_key($csv, $temptopics);
+
+        $section = course_add_section($course, self::SECTION_POSITION);
+
+        if (empty($section->id)) {
+            $section = $DB->get_record('course_sections', array('course' => $course->id, 'section' => self::SECTION_POSITION));
+
+        }
+        foreach ($topics as $csvTopicRow) {
+
+            self::create_ojts($course, $csvTopicRow, $section, $csv);
+        }
+
+
+        return (empty($result)) ? get_string('importsuccess', self::PLUGIN_NAME) : $result;
+
+    } // import_file
+
+    public static function create_ojts($course, $csvTopicRow, $section, $csv)
+    {
+        global $DB, $CFG;
+        $topicName = $csvTopicRow['ojt_topic'];
+        $ojt = $DB->get_record('ojt', array('course' => $course->id, 'name' => $topicName));
+        $topic = new stdClass();
+        $topic->name = $topicName;
+        $topic->course = $course->id;
+        $topic->intro = '';
+        $topic->completiontopics = 1;
+        $topic->timemodified = time();
+
+        if (empty($ojt->id)) {
+            $topic->timecreated = time();
+            $ojt = $DB->insert_record('ojt', $topic);
+
+        } else {
+            $topic->id = $ojt->id;
+            $DB->update_record('ojt', $topic);
+
+        }
+
+        $cmid = self::create_course_modules($course, $ojt, $section);
+        $ojtTopicRecord = self::create_ojt_topics($ojt, $csvTopicRow);
+        self::update_course_sections($course, $section, $cmid);
+
+        self::create_ojt_topic_tasks($csv, $csvTopicRow, $ojtTopicRecord);
+
+    }
+
+    public static function create_course_modules($course, $ojt, $section)
+    {
+
+
+        global $DB, $CFG;
+        $cm = new stdClass();
+        $cm->course = $course->id;
+        $cm->module = $DB->get_field('modules', 'id', array('name' => 'ojt'));
+        $ojtid = (is_object($ojt)) ? $ojt->id : (int)$ojt;
+        $cm->instance = $ojtid;
+        $cm->section = $section->id;
+        $cm->idnumber = 0;
+        $cm->completion = COMPLETION_TRACKING_AUTOMATIC;
+        $cmid = $DB->get_record('course_modules', array('course' => $course->id, 'section' => $cm->section, 'instance' => $cm->instance, 'module' => $cm->module));
+        if (empty($cmid->id)) {
+            $cm->added = time();
+            $cmid = $DB->insert_record('course_modules', $cm);
+        } else {
+            $cm->id = $cmid->id;
+            $DB->update_record('course_modules', $cm);
+        }
+
+        return $cmid;
+    }
+
+    public static function create_ojt_topics($ojt, $csvTopicRow)
+    {
+        global $DB, $CFG;
+        $ojtid = (is_object($ojt)) ? $ojt->id : (int)$ojt;
+        $topicName = $csvTopicRow['ojt_topic'];
+        $ojtTopicRecord = $DB->get_record('ojt_topic', array('ojtid' => $ojtid, 'name' => $topicName));
+        $ojtTopic = new stdClass();
+        $ojtTopic->name = $topicName;
+        $ojtTopic->ojtid = $ojtid;
+        if (isset($csvTopicRow['ojt_topic_completion_optional'])) {
+            $ojtTopic->completionreq = $csvTopicRow['ojt_topic_completion_optional'];
+        }
+
+        if (empty($ojtTopicRecord->id)) {
+            $ojtTopicRecord = $DB->insert_record('ojt_topic', $ojtTopic);
+        } else {
+            $ojtTopic->id = $ojtTopicRecord->id;
+            $DB->update_record('ojt_topic', $ojtTopic);
+        }
+
+        return $ojtTopicRecord;
+    }
+
+    public static function update_course_sections($course, $section, $cmid)
+    {
+
+        global $DB, $CFG;
+        $section = $DB->get_record('course_sections', array('id' => $section->id));
+        $course_module_id = (is_object($cmid)) ? $cmid->id : (int)$cmid;
+        $sectionData = new stdClass();
+        $sectionData->sequence = "{$section->sequence},$course_module_id";
+        course_update_section($course, $section, $sectionData);
+    }
+
+    public static function create_ojt_topic_tasks($csv, $csvTopicRow, $ojtTopicRecord)
+    {
+
+        global $DB, $CFG;
+
+        $topicName = $csvTopicRow['ojt_topic'];
+        $ojtTopicItems = array_filter($csv, function ($i) use ($topicName) {
+            return $i['ojt_topic'] == $topicName;
+        });
+
+        $topicid = (is_object($ojtTopicRecord)) ? $ojtTopicRecord->id : (int)$ojtTopicRecord;
+        foreach ($ojtTopicItems as $ojtTopicItem) {
+            $topicItem = $DB->get_record('ojt_topic_item', array('topicid' => $topicid, 'name' => $ojtTopicItem['ojt_task']));
+            $tempTopicItem = new stdClass();
+            $tempTopicItem->name = $ojtTopicItem['ojt_task'];
+            $tempTopicItem->topicid = $topicid;
+            if (isset($ojtTopicItem['ojt_task_completion_optional'])) {
+                $tempTopicItem->completionreq = $ojtTopicItem['ojt_task_completion_optional'];;
+            }
+            if (isset($ojtTopicItem['ojt_task_fileuploads'])) {
+                $tempTopicItem->allowfileuploads = $ojtTopicItem['ojt_task_fileuploads'];;
+            }
+            if (isset($ojtTopicItem['ojt_task_selffileuploads'])) {
+                $tempTopicItem->allowselffileuploads = $ojtTopicItem['ojt_task_selffileuploads'];;
+            }
+
+
+            if ($topicItem) {
+                $tempTopicItem->id = $topicItem->id;
+                $DB->update_record('ojt_topic_item', $tempTopicItem);
+            } else {
+                $topicItem = $DB->insert_record('ojt_topic_item', $tempTopicItem);
+
+            }
+
+        }
+    }
+
+
+    public static function import_completion_file(stdClass $course, stored_file $import_file)
+    {
+        global $DB, $USER;
+        // Default return value
+        $result = '';
+        // Open and fetch the file contents
+        $fh = $import_file->get_content_file_handle();
+
+        $csv = array();
+        $i = 0;
+        if ($fh) {
+            $columns = fgetcsv($fh, '', ",");
+            while (($row = fgetcsv($fh, '', ",")) !== false) {
+                $csv[$i] = array_combine($columns, $row);
+                $i++;
+            }
+            fclose($fh);
+        }
+        self::update_ojt_topic($course, $csv);
+
+        return (empty($result)) ? get_string('importsuccess', self::PLUGIN_NAME) : $result;
+
+    }
+
+
+    public static function get_user_ids_and_enrol($course, $csv)
+    {
+
+        global $DB, $USER;
+        $enrolinstances = enrol_get_instances($course->id, true);
+        $enrol = enrol_get_plugin('manual');
+        $instance = '';
+        foreach ($enrolinstances as $courseenrolinstance) {
+            if ($courseenrolinstance->enrol == "manual") {
+                $instance = $courseenrolinstance;
+                break;
+            }
+        }
+
+        $uniqueUsers = array_unique(array_map(function ($value) {
+            return $value['username'];
+        }, $csv));
+
+        $usersarray = [];
+        foreach ($uniqueUsers as $user) {
+            $userobject = $DB->get_record('user', array('username' => $user));
+            if ($userobject) {
+                $usersarray[$user] = $userobject->id;
+            } else {
+                $userobject = $DB->get_record('user', array('idnumber' => $user));
+                if ($userobject) {
+                    $usersarray[$user] = $userobject->id;
+                }
+            }
+            if ($userobject && $instance) {
+                $enrol->enrol_user($instance, $userobject->id, 5);
+            }
+        }
+        return $usersarray;
+    }
+
+    public static function get_topic_items($ojtTopics, $ojtTopicObject)
+    {
+        global $DB, $USER;
+        $topicItems = array_unique(array_column($ojtTopics, 'ojt_task'));
+        $topicItemsArray = [];
+        foreach ($topicItems as $topicItem) {
+            $topicItemObject = $DB->get_record('ojt_topic_item', array('topicid' => $ojtTopicObject->id, 'name' => $topicItem));
+            if ($topicItemObject) {
+                $topicItemsArray[$topicItem] = $topicItemObject->id;
+            }
+        }
+        return $topicItemsArray;
+    }
+
+    public static function update_topicitem_completion($ojtTopics, $usersarray, $ojt, $ojtTopicObject, $topicItemsArray)
+    {
+
+        global $DB, $USER;
+
+        foreach ($ojtTopics as $ojtTopic) {
+            $userid = $usersarray[$ojtTopic['username']];
+            $ojtid = $ojt->id;
+            $topicid = $ojtTopicObject->id;
+            $topicitemid = $topicItemsArray[$ojtTopic['ojt_task']];
+            $params = array('userid' => $userid,
+                'ojtid' => $ojtid,
+                'topicid' => $topicid,
+                'topicitemid' => $topicitemid,
+                'type' => OJT_CTYPE_TOPICITEM);
+            $completionStatus = OJT_INCOMPLETE;
+            if (isset($ojtTopic['completion']) && $ojtTopic['completion']) {
+                $completionStatus = OJT_COMPLETE;
+            }
+
+            if ($completion = $DB->get_record('ojt_completion', $params)) {
+                $completion->status = $completionStatus;
+                $completion->timemodified = time();
+                $completion->modifiedby = $USER->id;
+                $DB->update_record('ojt_completion', $completion);
+            } else {
+                $completion = (object)$params;
+                $completion->status = $completionStatus;
+                $completion->timemodified = time();
+                $completion->modifiedby = $USER->id;
+                $completion->id = $DB->insert_record('ojt_completion', $completion);
+            }
+
+
+            ojt_update_topic_completion($userid, $ojtid, $topicid);
+        }
+
+    }
+
+    public static function update_ojt_topic($course, $csv)
+    {
+        global $DB, $USER;
+        $usersarray = self::get_user_ids_and_enrol($course, $csv);
+        $temptopics = array_unique(array_column($csv, 'ojt_topic'));
+        $topics = array_intersect_key($csv, $temptopics);
+        foreach ($topics as $csvTopicRow) {
+            $topicName = $csvTopicRow['ojt_topic'];
+            $ojt = $DB->get_record('ojt', array('course' => $course->id, 'name' => $topicName));
+            if (!empty($ojt->id)) {
+                $ojtTopics = array_filter($csv, function ($i) use ($topicName) {
+                    return $i['ojt_topic'] == $topicName;
+                });
+
+                $ojtTopicObject = $DB->get_record('ojt_topic', array('ojtid' => $ojt->id, 'name' => $topicName));
+                if (!empty($ojtTopicObject->id)) {
+
+                    $topicItemsArray = self::get_topic_items($ojtTopics, $ojtTopicObject);
+                    self::update_topicitem_completion($ojtTopics, $usersarray, $ojt, $ojtTopicObject, $topicItemsArray);
+
+                }
+
+            }
+        }
+    }
+
+} 
 

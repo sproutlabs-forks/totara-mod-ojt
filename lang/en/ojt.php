@@ -95,3 +95,17 @@ $string['type1'] = 'Topic';
 $string['type2'] = 'Item';
 $string['updatefiles'] = 'Update files';
 $string['witnessed'] = 'Witnessed';
+
+
+
+$string['topicimporttitle'] = 'Import ojt topics';
+
+$string['topicimporthelp'] = 'Import ojt topic import help';
+
+$string['importcsv'] = 'Import CSV';
+$string['importcsv_help'] = 'Import CSV with correct headers';
+$string['import'] = 'Import';
+$string['importsuccess'] = 'Successfully imported';
+
+$string['usercompletiontitle'] = 'Import ojt task completions';
+$string['importcompletion'] = 'Import ojt task completions';
