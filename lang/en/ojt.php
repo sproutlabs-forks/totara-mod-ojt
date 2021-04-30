@@ -97,7 +97,7 @@ $string['updatefiles'] = 'Update files';
 $string['witnessed'] = 'Witnessed';
 
 
-
+$string['choosefile'] = 'CSV file to upload';
 $string['topicimporttitle'] = 'Import ojt topics';
 
 $string['topicimporthelp'] = 'Import ojt topic import help';
@@ -109,3 +109,19 @@ $string['importsuccess'] = 'Successfully imported';
 
 $string['usercompletiontitle'] = 'Import ojt task completions';
 $string['importcompletion'] = 'Import ojt task completions';
+$string['uploadtopics'] = 'This will import ojt topics and tasks items.
+
+The CSV file should contain the following columns in the first line of the file:
+{$a}
+
+The ojt name and ojt task names are based on column ojt_topic which will be created as activity in first section of the course if the specified ojt name has not been created. All task are required to completed as default.
+
+The ojt tasks items are based on the column ojt_task. All task are mandatory and can upload evaluator and owner files as default.
+';
+$string['uploadcompletions'] = 'This will import ojt task items completion.
+
+The CSV file should contain the following columns in the first line of the file:
+{$a}
+
+The ojt_topic should be exactly same for ojt name and ojt task name. Be careful for spaces and typo error. ojt_task column is exact task item under that task name. The username column should be username or idnumber as in profile of the user. The task item completion is based on completion column which can be either 0 or 1. The task item is marked as complete if completion value is 1 and 0 as incomplete.
+';

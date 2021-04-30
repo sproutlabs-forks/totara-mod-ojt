@@ -65,8 +65,9 @@ if ($mform->is_cancelled()) {
 
     // GET request, or POST request where data did not
     // pass validation, either case display the form
+    $heading = get_string('topicimporttitle', mod_ojt_plugin::PLUGIN_NAME);
     echo $OUTPUT->header();
-    echo $OUTPUT->heading_with_help(get_string('topicimporttitle', mod_ojt_plugin::PLUGIN_NAME), 'topicimporthelp', mod_ojt_plugin::PLUGIN_NAME);
+    echo $OUTPUT->heading($heading);
 
     // Display the form with a filepicker
     echo $OUTPUT->container_start();
