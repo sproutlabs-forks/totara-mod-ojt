@@ -929,10 +929,17 @@ class mod_ojt_plugin
             }
 
             if ($userid && $ojtid && $topicid && $topicitemid) {
+                $timemodified = time();
+                if (isset($ojtTopic['completiondate']) && $ojtTopic['completiondate']) {
+                    $unixdatetime = DateTime::createFromFormat('d/m/Y', $ojtTopic['completiondate'])->getTimestamp();
+                    $timemodified = $unixdatetime;
+                }
+                
                 $params = array('userid' => $userid,
                     'ojtid' => $ojtid,
                     'topicid' => $topicid,
                     'topicitemid' => $topicitemid,
+                    'timemodified' => $timemodified,
                     'type' => OJT_CTYPE_TOPICITEM);
                 $completionStatus = OJT_INCOMPLETE;
                 if (isset($ojtTopic['completion']) && $ojtTopic['completion']) {
@@ -941,13 +948,11 @@ class mod_ojt_plugin
 
                 if ($completion = $DB->get_record('ojt_completion', $params)) {
                     $completion->status = $completionStatus;
-                    $completion->timemodified = time();
                     $completion->modifiedby = $USER->id;
                     $DB->update_record('ojt_completion', $completion);
                 } else {
                     $completion = (object)$params;
                     $completion->status = $completionStatus;
-                    $completion->timemodified = time();
                     $completion->modifiedby = $USER->id;
                     $completion->id = $DB->insert_record('ojt_completion', $completion);
                 }

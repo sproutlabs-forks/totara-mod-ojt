@@ -98,6 +98,7 @@ $string['witnessed'] = 'Witnessed';
 
 
 $string['choosefile'] = 'CSV file to upload';
+$string['completioninfo'] = 'Please tick the checkbox for completion record';
 $string['topicimporttitle'] = 'Import ojt topics';
 
 $string['topicimporthelp'] = 'Import ojt topic import help';
