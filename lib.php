@@ -611,13 +611,15 @@ function ojt_extend_navigation_course($navigation, $course, $context)
 {
     global $CFG, $PAGE;
     $courseid = $PAGE->course->id;
+    
+    if (is_siteadmin()) {
+        $url = new moodle_url('/mod/ojt/importtopics.php', array('id' => $courseid));
+        $navigation->add(get_string('topicimporttitle', 'ojt'), $url, navigation_node::TYPE_USER, null, null, new pix_icon('i/import', ''));
 
-    $url = new moodle_url('/mod/ojt/importtopics.php', array('id' => $courseid));
-    $navigation->add(get_string('topicimporttitle', 'ojt'), $url, navigation_node::TYPE_USER, null, null, new pix_icon('i/import', ''));
-
-    $usercompletionurl = new moodle_url('/mod/ojt/importusercompletion.php', array('id' => $courseid));
-    $navigation->add(get_string('usercompletiontitle', 'ojt'), $usercompletionurl, navigation_node::TYPE_USER, null, null, new pix_icon('i/import', ''));
-
+        $usercompletionurl = new moodle_url('/mod/ojt/importusercompletion.php', array('id' => $courseid));
+        $navigation->add(get_string('usercompletiontitle', 'ojt'), $usercompletionurl, navigation_node::TYPE_USER, null, null, new pix_icon('i/import', ''));
+    }
+    
 }
 
 class mod_ojt_plugin
