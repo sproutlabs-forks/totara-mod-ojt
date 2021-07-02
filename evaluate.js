@@ -67,7 +67,8 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'action': 'togglecompletion',
                     'bid': config.ojtid,
                     'userid': config.userid,
-                    'id': itemid
+                    'id': itemid,
+                    'timemodified':$('.ojt-override-date-input').val()
                 },
                 beforeSend: function() {
                     ojtobj.replaceIcon(completionimg, 'loading');
@@ -107,7 +108,8 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'bid': config.ojtid,
                     'userid': config.userid,
                     'id': itemid,
-                    'comment': $(commentinput).val()
+                    'comment': $(commentinput).val(),
+                    'timemodified':$('.ojt-override-date-input').val()
                 },
                 success: function(data) {
 
@@ -136,7 +138,8 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'sesskey' : M.cfg.sesskey,
                     'bid': config.ojtid,
                     'userid': config.userid,
-                    'id': itemid
+                    'id': itemid,
+                    'timemodified':$('.ojt-override-date-input').val()
                 },
                 beforeSend: function() {
                     ojtobj.replaceIcon(completionimg, 'loading');
@@ -173,7 +176,8 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'sesskey' : M.cfg.sesskey,
                     'bid': config.ojtid,
                     'userid': config.userid,
-                    'id': topicid
+                    'id': topicid,
+                    'timemodified':$('.ojt-override-date-input').val()
                 },
                 beforeSend: function() {
                     ojtobj.replaceIcon(signoffimg, 'loading');
