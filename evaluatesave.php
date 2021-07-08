@@ -65,8 +65,14 @@ $params = array('userid' => $userid,
     'topicid' => $item->topicid,
     'topicitemid' => $itemid,
     'type' => OJT_CTYPE_TOPICITEM);
-if($timemodified){
-    $timemodified = time();
+
+if(!$timemodified){
+    $time = userdate(time());
+    $objDateTime = new DateTime($time);
+    $timemodified =  $objDateTime->format('Y-m-d\TH:i:s');
+    $timemodified = strtotime($timemodified);
+}else{
+    $timemodified = strtotime($timemodified);
 }
 if ($completion = $DB->get_record('ojt_completion', $params)) {
     // Update
@@ -77,16 +83,12 @@ if ($completion = $DB->get_record('ojt_completion', $params)) {
         case 'savecomment':
             $completion->comment = required_param('comment', PARAM_TEXT);
             // append a date to the comment string
-            $completion->comment .= ' - '.userdate(time(), $dateformat).'.';
+            $completion->comment .= ' - '.userdate(($timemodified), $dateformat).'.';
             break;
         default:
     }
-    if($timemodified){
-        $completion->timemodified = strtotime($timemodified);
-    }else{
-        $completion->timemodified = time(); 
-    }
-   
+
+    $completion->timemodified = $timemodified;
     $completion->modifiedby = $USER->id;
     $DB->update_record('ojt_completion', $completion);
 } else {
@@ -99,15 +101,11 @@ if ($completion = $DB->get_record('ojt_completion', $params)) {
         case 'savecomment':
             $completion->comment = required_param('comment', PARAM_TEXT);
             // append a date to the comment string
-            $completion->comment .= ' - '.$timemodified.'.';
+            $completion->comment .= ' - '.userdate(($timemodified), $dateformat).'.';
             break;
         default:
     }
-    if($timemodified){
-        $completion->timemodified = strtotime($timemodified);
-    }else{
-        $completion->timemodified = time();
-    }
+    $completion->timemodified = $timemodified;
     $completion->modifiedby = $USER->id;
     $completion->id = $DB->insert_record('ojt_completion', $completion);
 }

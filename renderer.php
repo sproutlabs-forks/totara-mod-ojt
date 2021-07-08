@@ -142,7 +142,19 @@ class mod_ojt_renderer extends plugin_renderer_base {
                             'class' => 'ojt-completion-comment', 'ojt-item-id' => $item->id));
 
                     $cellcontent .= html_writer::start_tag('div', array('class' => 'ojt-completion-override-date', 'style' => 'display:flex;align-items:center;margin:0.4em;'));
+                    $isvalidTime = false;
                     $time = userdate(time());
+                    try {
+                       $date =  new DateTime('@' . $item->timemodified);
+                        $year = $date->format('Y');
+                        $isvalidTime = (int)$year > 2000;
+                    } catch(Exception $e) {
+                        $isvalidTime = false;
+                    }
+                    if($isvalidTime){
+                        $time = userdate($item->timemodified);  
+                    }
+                               
                     $objDateTime = new DateTime($time);
                     $time =  $objDateTime->format('Y-m-d\TH:i:s');
                     $attributes = array(
