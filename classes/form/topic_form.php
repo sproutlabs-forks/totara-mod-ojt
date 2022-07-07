@@ -50,6 +50,8 @@ class topic_form extends moodleform {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
 
+        $mform->addElement('editor', 'content', get_string('topiccontent', 'ojt'));
+
         $mform->addElement('advcheckbox', 'completionreq', get_string('optionalcompletion', 'ojt'));
 
         if (!empty($CFG->enablecompetencies)) {

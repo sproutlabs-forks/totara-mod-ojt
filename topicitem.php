@@ -77,6 +77,10 @@ if ($data = $form->get_data()) {
     $item = new stdClass();
     $item->topicid = $data->tid;
     $item->name = $data->name;
+    $item->content = format_text($data->content['text'], FORMAT_MOODLE, array(
+        'overflowdiv' => true,
+        'blanktarget' => true
+    ));
     $item->completionreq = $data->completionreq;
     $item->allowfileuploads = $data->allowfileuploads;
     $item->allowselffileuploads = $data->allowselffileuploads;

@@ -63,14 +63,18 @@ if ($data = $form->get_data()) {
     $topic = new stdClass();
     $topic->ojtid = $data->bid;
     $topic->name = $data->name;
+    $topic->content = format_text($data->content['text'], FORMAT_MOODLE, array(
+        'overflowdiv' => true,
+        'blanktarget' => true
+    ));
     $topic->completionreq = $data->completionreq;
     $topic->competencies = !empty($data->competencies) ? implode(',', $data->competencies) : '';
     $topic->allowcomments = $data->allowcomments;
 
     if (empty($data->id)) {
         // Add
-        $topiccount = $DB->get_record('ojt_topic', array('ojtid' => $ojtid), 'COUNT(*)', MUST_EXIST);
-        $topic->position = $topiccount->count;
+        $topiccount = $DB->count_records('ojt_topic', array('ojtid' => $ojtid));
+        $topic->position = $topiccount;
         $DB->insert_record('ojt_topic', $topic);
     } else {
         // Update

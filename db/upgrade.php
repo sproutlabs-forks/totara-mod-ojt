@@ -101,5 +101,23 @@ function xmldb_ojt_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022052600, 'ojt');
     }
 
+    if ($oldversion < 2022052601) {
+        $field = new xmldb_field('content', XMLDB_TYPE_TEXT, '', null, null, null, null, 'name');
+
+        // Content field for topics and topic items.
+        foreach ([
+            'ojt_topic',
+            'ojt_topic_item'
+        ] as $tablename) {
+            $table = new xmldb_table($tablename);
+
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2022052601, 'ojt');
+    }
+
     return true;
 }

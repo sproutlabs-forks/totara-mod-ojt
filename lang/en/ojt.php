@@ -135,3 +135,7 @@ The CSV file should contain the following columns in the first line of the file:
 The ojt_topic should be exactly same for ojt name and ojt task name. Be careful for spaces and typo error. ojt_task column is exact task item under that task name. The username column should be username or idnumber as in profile of the user. The task item completion is based on completion column which can be either 0 or 1. The task item is marked as complete if completion value is 1 and 0 as incomplete.
 ';
 // Sproutlabs: END CSV upload patch
+// Sproutlabs: BEGIN content patch
+$string['topiccontent'] = 'Add some content to this topic';
+$string['itemcontent'] = 'Add some content to this item';
+// Sproutlabs: END content patch

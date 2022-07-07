@@ -178,6 +178,9 @@ class mod_ojt_renderer extends plugin_renderer_base {
                 html_writer::tag('em', ' ('.get_string('optional', 'ojt').')') : '';
             $out .= html_writer::tag('div', format_string($topic->name).$optionalstr.$completionicon,
                 array('class' => 'mod-ojt-topic-heading expanded'));
+            if ($topic->content) {
+                $out .= $topic->content;
+            }
 
             $table = new html_table();
             $table->attributes['class'] = 'mod-ojt-topic-items generaltable';
@@ -190,7 +193,11 @@ class mod_ojt_renderer extends plugin_renderer_base {
                 $row = array();
                 $optionalstr = $item->completionreq == OJT_OPTIONAL ?
                     html_writer::tag('em', ' ('.get_string('optional', 'ojt').')') : '';
-                $row[] = format_string($item->name).$optionalstr;
+                $primarycontent = format_string($item->name).$optionalstr;
+                if ($item->content) {
+                    $primarycontent .= $item->content;
+                }
+                $row[] = $primarycontent;
                 if ($evaluate) {
                     $completionicon = $item->status == OJT_COMPLETE ? 'completion-manual-y' : 'completion-manual-n';
                     $cellcontent = html_writer::start_tag('div', array('class' => 'ojt-eval-actions', 'ojt-item-id' => $item->id));
