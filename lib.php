@@ -592,6 +592,23 @@ function ojt_comment_template() {
     return $renderer->comment_template();
 }
 
+// Sproutlabs: BEGIN course navigation patch
+function ojt_extend_navigation_course($navigation, $course, $context)
+{
+    global $CFG, $PAGE;
+    $courseid = $PAGE->course->id;
+
+    if (is_siteadmin()) {
+        $url = new moodle_url('/mod/ojt/importtopics.php', array('id' => $courseid));
+        $navigation->add(get_string('topicimporttitle', 'ojt'), $url, navigation_node::TYPE_USER, null, null, new pix_icon('i/import', ''));
+
+        $usercompletionurl = new moodle_url('/mod/ojt/importusercompletion.php', array('id' => $courseid));
+        $navigation->add(get_string('usercompletiontitle', 'ojt'), $usercompletionurl, navigation_node::TYPE_USER, null, null, new pix_icon('i/import', ''));
+    }
+
+}
+// Sproutlabs: END course navigation patch
+
 /**
  * Reset a users completion status in an ojt so they can retake the activity
  * mainly used for certification recerts

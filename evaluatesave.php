@@ -37,6 +37,9 @@ $userid = required_param('userid', PARAM_INT);
 $ojtid  = required_param('bid', PARAM_INT);
 $itemid = required_param('id', PARAM_INT);
 $action = required_param('action', PARAM_TEXT);
+// Sproutlabs: BEGIN Timemodified patch
+$timemodified = required_param('timemodified', PARAM_TEXT);
+// Sproutlabs: END Timemodified patch
 
 $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
 $ojt  = $DB->get_record('ojt', array('id' => $ojtid), '*', MUST_EXIST);
@@ -64,6 +67,18 @@ $params = array('userid' => $userid,
     'topicid' => $item->topicid,
     'topicitemid' => $itemid,
     'type' => OJT_CTYPE_TOPICITEM);
+
+// Sproutlabs: BEGIN Timemodified patch
+if(!$timemodified){
+    $time = userdate(time());
+    $objDateTime = new DateTime($time);
+    $timemodified =  $objDateTime->format('Y-m-d\TH:i:s');
+    $timemodified = strtotime($timemodified);
+}else{
+    $timemodified = strtotime($timemodified);
+}
+// Sproutlabs: END Timemodified patch
+
 if ($completion = $DB->get_record('ojt_completion', $params)) {
     // Update
     switch ($action) {
@@ -76,11 +91,15 @@ if ($completion = $DB->get_record('ojt_completion', $params)) {
         case 'savecomment':
             $completion->comment = required_param('comment', PARAM_TEXT);
             // append a date to the comment string
-            $completion->comment .= ' - '.userdate(time(), $dateformat).'.';
+            // Sproutlabs: BEGIN Timemodified patch
+            $completion->comment .= ' - '.userdate($timemodified, $dateformat).'.';
+            // Sproutlabs: END Timemodified patch
             break;
         default:
     }
-    $completion->timemodified = time();
+    // Sproutlabs: BEGIN Timemodified patch
+    $completion->timemodified = $timemodified;
+    // Sproutlabs: END Timemodified patch
     $completion->modifiedby = $USER->id;
     $DB->update_record('ojt_completion', $completion);
 } else {
@@ -94,11 +113,15 @@ if ($completion = $DB->get_record('ojt_completion', $params)) {
         case 'savecomment':
             $completion->comment = required_param('comment', PARAM_TEXT);
             // append a date to the comment string
-            $completion->comment .= ' - '.userdate(time(), $dateformat).'.';
+            // Sproutlabs: BEGIN Timemodified patch
+            $completion->comment .= ' - '.userdate($timemodified, $dateformat).'.';
+            // Sproutlabs: END Timemodified patch
             break;
         default:
     }
-    $completion->timemodified = time();
+    // Sproutlabs: BEGIN Timemodified patch
+    $completion->timemodified = $timemodified;
+    // Sproutlabs: END Timemodified patch
     $completion->modifiedby = $USER->id;
     $completion->id = $DB->insert_record('ojt_completion', $completion);
 }

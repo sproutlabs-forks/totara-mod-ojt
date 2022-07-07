@@ -227,10 +227,43 @@ class mod_ojt_renderer extends plugin_renderer_base {
                         $textAreaOptions = array('name' => 'comment-'.$item->id, 'rows' => 3,
                             'class' => 'ojt-completion-comment', 'ojt-item-id' => $item->id);
                         $cellcontent .= html_writer::tag('textarea', $item->comment, $textAreaOptions);
-                    }
-                    $cellcontent .= html_writer::tag('div', format_text($item->comment, FORMAT_PLAIN),
-                        array('class' => 'ojt-completion-comment-print', 'ojt-item-id' => $item->id));
-                    $cellcontent .= html_writer::end_tag('div');
+
+                        // Sproutlabs: BEGIN Timemodified patch
+                        $cellcontent .= html_writer::start_tag('div', array('class' => 'ojt-completion-override-date', 'style' => 'display:flex;align-items:center;margin:0.4em;'));
+                        $isvalidTime = false;
+                        $time = userdate(time());
+                        try {
+                        $date =  new DateTime('@' . $item->timemodified);
+                            $year = $date->format('Y');
+                            $isvalidTime = (int)$year > 2000;
+                        } catch(Exception $e) {
+                            $isvalidTime = false;
+                        }
+                        if($isvalidTime){
+                            $time = userdate($item->timemodified);  
+                        }
+
+                        $objDateTime = new DateTime($time);
+                        $time =  $objDateTime->format('Y-m-d\TH:i:s');
+                        $attributes = array(
+                            'type' => 'datetime-local',
+                            'class' => 'ojt-override-date-input',
+                            'id' => 'ojt-update-date',
+                            'value' => $time);
+                        $cellcontent .= html_writer::tag('input', '', $attributes);
+                        $cellcontent .= html_writer::end_tag('div');
+
+                        $cellcontent .= html_writer::start_tag('div', array('class' => 'ojt-completion-area','style'=>'display:flex;align-items:center;'));
+                        $cellcontent .= $this->output->flex_icon($completionicon, ['classes' => 'ojt-completion-toggle']);
+                        $string = get_string('completioninfo', 'ojt');
+
+                        $cellcontent.= html_writer::tag('span',$string , array('class' => 'ojt-item-witness'));
+                        $cellcontent .= html_writer::end_tag('div');
+                        }
+                        $cellcontent .= html_writer::tag('div', format_text($item->comment, FORMAT_PLAIN),
+                            array('class' => 'ojt-completion-comment-print', 'ojt-item-id' => $item->id));
+                        $cellcontent .= html_writer::end_tag('div');
+                        // Sproutlabs: END Timemodified patch
                 } else {
                     // Show static stuff.
                     $cellcontent = '';

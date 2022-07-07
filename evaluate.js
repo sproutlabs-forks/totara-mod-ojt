@@ -69,7 +69,10 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'action': 'complete',
                     'bid': config.ojtid,
                     'userid': config.userid,
-                    'id': itemid
+                    'id': itemid,
+                    // Sproutlabs: BEGIN Timemodified patch
+                    'timemodified': $('.ojt-override-date-input').val()
+                    // Sproutlabs: END Timemodified patch
                 },
                 success: function(data) {
                     // Update the topic's completion too.
@@ -137,7 +140,8 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'bid': config.ojtid,
                     'userid': config.userid,
                     'id': itemid,
-                    'comment': $(commentinput).val()
+                    'comment': $(commentinput).val(),
+                    'timemodified': $('.ojt-override-date-input').val()
                 },
                 success: function(data) {
 
@@ -168,6 +172,9 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'bid': config.ojtid,
                     'userid': config.userid,
                     'id': itemid,
+                    // Sproutlabs: BEGIN Timemodified patch
+                    'timemodified': $('.ojt-override-date-input').val(),
+                    // Sproutlabs: END Timemodified patch
                     'comment': $(commentinput).val()
                 },
                 success: function(data) {
@@ -199,7 +206,10 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'sesskey': M.cfg.sesskey,
                     'bid': config.ojtid,
                     'userid': config.userid,
-                    'id': itemid
+                    'id': itemid,
+                    // Sproutlabs: BEGIN Timemodified patch
+                    'timemodified': $('.ojt-override-date-input').val()
+                    // Sproutlabs: END Timemodified patch
                 },
                 beforeSend: function() {
                     ojtobj.replaceIcon(completionimg, 'loading');
@@ -236,7 +246,10 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'sesskey': M.cfg.sesskey,
                     'bid': config.ojtid,
                     'userid': config.userid,
-                    'id': topicid
+                    'id': topicid,
+                    // Sproutlabs: BEGIN Timemodified patch
+                    'timemodified': $('.ojt-override-date-input').val()
+                    // Sproutlabs: END Timemodified patch
                 },
                 beforeSend: function() {
                     ojtobj.replaceIcon(signoffimg, 'loading');
