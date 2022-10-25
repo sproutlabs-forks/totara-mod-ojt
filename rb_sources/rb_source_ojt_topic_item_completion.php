@@ -136,7 +136,7 @@ class rb_source_ojt_topic_item_completion extends rb_base_source {
 
     protected function define_columnoptions() {
         global $DB;
-
+        $join='course';
         $columnoptions = array(
             new rb_column_option(
                 'ojt',
@@ -200,7 +200,14 @@ class rb_source_ojt_topic_item_completion extends rb_base_source {
                 'base.comment',
                 array('displayfunc' => 'format_string')
             ),
-
+            new \rb_column_option(
+                'course',
+                'addbulkcompletionbutton',
+                get_string('addbulkcompletionbutton', 'rb_source_ojt_topic_item_completion'),
+                "$join.id",
+                array('joins' => $join,
+                    'displayfunc' => 'addbulkcompletionbutton')
+            )
         );
 
         // include some standard columns
@@ -334,6 +341,10 @@ class rb_source_ojt_topic_item_completion extends rb_base_source {
                 'type' => 'base',
                 'value' => 'comment',
             ),
+            array(
+                'type' => 'course',
+                'value' => 'addbulkcompletionbutton',
+            ),
 
         );
         return $defaultcolumns;
@@ -442,6 +453,18 @@ class rb_source_ojt_topic_item_completion extends rb_base_source {
             $DB->get_manager()->reset_sequence(new xmldb_table($table));
        }
     }
+    public function rb_display_addbulkcompletionbutton($courseid, $evidence_type_id)
+    {
+        $string =  get_string('importcsv', 'rb_source_ojt_topic_item_completion');
+        $addbulkcompletionbutton = html_writer::link(
+            new moodle_url('/mod/ojt/importusercompletion.php', ['id' => $courseid]),
+            $string,
+            array('class' => 'btn','target'=>'_blank')
+
+        );
+        return $addbulkcompletionbutton;
+    }
+
 
 } // class
 

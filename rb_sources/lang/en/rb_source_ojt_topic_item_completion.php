@@ -18,3 +18,5 @@ $string['type_ojt'] = 'OJT';
 $string['type_ojt_topic'] = 'OJT topic';
 $string['type_ojt_topic_item'] = 'OJT topic item';
 $string['user'] = 'User';
+$string['addbulkcompletionbutton'] = 'Add bulk completion';
+$string['importcsv'] = 'Import CSV';
