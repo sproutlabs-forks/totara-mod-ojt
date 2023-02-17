@@ -110,6 +110,8 @@ $string['importsuccess'] = 'Successfully imported';
 
 $string['usercompletiontitle'] = 'Import ojt task completions';
 $string['importcompletion'] = 'Import ojt task completions';
+$string['course_completion_updated'] = 'Course completion updated';
+$string['update_ojt_course_completion'] = 'Update ojt course completion';
 $string['uploadtopics'] = 'This will import ojt topics and tasks items.
 
 The CSV file should contain the following columns in the first line of the file:
