@@ -41,68 +41,80 @@ class update_ojt_course_completion extends \core\task\scheduled_task {
         return get_string('update_ojt_course_completion', 'mod_ojt');
     }
 
-  
+
     /**
      * Do the job.
      * Throw exceptions on errors (the job will be retried).
      */
     public function execute() {
-global $DB;
- $completion_type = 'ojt';
+        global $DB;
+        $completion_type = 'ojt';
 
         $ojt_courses = $DB->get_records('course_completion_criteria', array('module' =>$completion_type));
+
         foreach ($ojt_courses as $ojt_course){
             $course = $ojt_course->course;
-            $course_compl_criterias = $DB->get_records('course_completion_criteria', array('course' =>$course));
+            $course = $ojt_course->course;
+            $course_compl_criterias = $DB->get_records_sql("SELECT * FROM {course_completion_criteria} WHERE course ={$course} AND `module` is NOT NULL AND moduleinstance IS NOT NULL");
+
+
             if($course_compl_criterias && count($course_compl_criterias)==1){
+
+
+
+
                 $ojt = $DB->get_record('ojt',['course'=>$course]);
                 if($ojt && isset($ojt->id) && $ojt->id>0){
-                    $ojt_completion = $DB->get_record('ojt_completion',['ojtid'=>$ojt->id,'type'=>OJT_CTYPE_TOPICITEM,'status'=>OJT_COMPLETE]);
-                    if($ojt_completion && isset($ojt_completion->userid) && $ojt_completion->userid >0){
-                        $course_completion  = $DB->get_record('course_completions', ['course' =>$course,'userid'=>$ojt_completion->userid]);
-                        if($course_completion && isset($course_completion->id) && $ojt_completion->timemodified!=$course_completion->timecompleted){
-                            
-                            $param = array();
-                            $param->id = $course_completion->id;
-                            $param->timecompleted = $ojt_completion->timemodified;
-                            $DB->update_record('course_completions', $param);
-                            $event = course_completion_updated::create(
-                                array(
-                                    'context' => \context_system::instance(),
-                                    'userid' => 2,
-                                    'relateduserid' => $ojt_completion->userid,
-                                    'courseid' => $course
-                                ));
-                            $course_completion_backup = array();
-                            $course_completion_backup->userid =$ojt_completion->userid;
-                            $course_completion_backup->course =$course;
-                            $course_completion_backup->timeenrolled =$course_completion->timeenrolled;
-                            $course_completion_backup->timestarted =$course_completion->timestarted;
-                            $course_completion_backup->timecompleted =$course_completion->timecompleted;
-                            $course_completion_backup->reaggregate =$course_completion->reaggregate;
-                            $DB->insert_record('ojt_course_completions', $course_completion_backup);
-                            $event->trigger();
+
+                    $ojt_completions = $DB->get_records('ojt_completion',['ojtid'=>$ojt->id,'type'=>OJT_CTYPE_TOPICITEM,'status'=>OJT_COMPLETE]);
+                    foreach ($ojt_completions as $ojt_completion){
+                        if($ojt_completion && isset($ojt_completion->userid) && $ojt_completion->userid >0){
+                            $course_completion  = $DB->get_record('course_completions', ['course' =>$course,'userid'=>$ojt_completion->userid]);
+                            if($course_completion && isset($course_completion->id) && $ojt_completion->timemodified!=$course_completion->timecompleted){
+                                $param = array();
+                                $param['id'] = $course_completion->id;
+                                $param['timecompleted'] = $ojt_completion->timemodified;
+
+
+                                $DB->update_record('course_completions', $param);
+                                $event = course_completion_updated::create(
+                                    array(
+                                        'context' => \context_system::instance(),
+                                        'userid' => 2,
+                                        'relateduserid' => $ojt_completion->userid,
+                                        'courseid' => $course
+                                    ));
+                                $course_completion_backup = array();
+                                $course_completion_backup['userid'] =$ojt_completion->userid;
+                                $course_completion_backup['course'] =$course;
+                                $course_completion_backup['timeenrolled'] =$course_completion->timeenrolled;
+                                $course_completion_backup['timestarted'] =$course_completion->timestarted;
+                                $course_completion_backup['timecompleted'] =$course_completion->timecompleted;
+                                $course_completion_backup['reaggregate'] =$course_completion->reaggregate;
+                                print_r("Coureses\n");
+                                try {
+                                    $DB->insert_record('ojt_course_completions', $course_completion_backup);
+                                }catch (\Exception $e){
+
+                                }
+
+                                $event->trigger();
+
+                            }
 
                         }
-                        
                     }
                 }
-                
-                
-                
-                
+
+
+
+
             }
 
-
-//            if($ojt_course && count($course)==1){
-//                $course = current($course);
-//                $course  = $course->id;
-//                print_r($course);
-//            }   
-           
             
+
         }
-      
+
 
 
     }
