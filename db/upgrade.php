@@ -68,7 +68,7 @@ function xmldb_ojt_upgrade($oldversion) {
         $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
         $table->add_field('course', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
         $table->add_field('organisation', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('positionid ', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('positionid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
         $table->add_field('timeenrolled', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
         $table->add_field('timestarted', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
         $table->add_field('timecomplete', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
