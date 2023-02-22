@@ -60,6 +60,30 @@ function xmldb_ojt_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2016031400, 'ojt');
     }
 
+    if ($oldversion < 2022111102) {
+
+        $table = new xmldb_table('ojt_course_completions');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
+        $table->add_field('course', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
+        $table->add_field('organisation', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('positionid ', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('timeenrolled', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
+        $table->add_field('timestarted', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
+        $table->add_field('timecomplete', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('reaggregate', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0);
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch add field allowselffileuploads.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // ojt savepoint reached.
+        upgrade_mod_savepoint(true, 2022111102, 'ojt');
+    }
 
     return true;
 }
