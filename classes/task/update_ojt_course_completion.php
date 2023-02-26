@@ -66,8 +66,9 @@ class update_ojt_course_completion extends \core\task\scheduled_task {
                 $ojt = $DB->get_record('ojt',['course'=>$course]);
                 if($ojt && isset($ojt->id) && $ojt->id>0){
 
-                    $ojt_completions = $DB->get_records('ojt_completion',['ojtid'=>$ojt->id,'type'=>OJT_CTYPE_TOPICITEM,'status'=>OJT_COMPLETE]);
-                    foreach ($ojt_completions as $ojt_completion){
+                    $ojt_completions = $DB->get_records('ojt_completion',['ojtid'=>2,'type'=>OJT_CTYPE_TOPICITEM,'status'=>OJT_COMPLETE],'timemodified DESC','*',0,1);
+                    if($ojt_completions && count($ojt_completions)){
+                        $ojt_completion = current($ojt_completions);
                         if($ojt_completion && isset($ojt_completion->userid) && $ojt_completion->userid >0){
                             $course_completion  = $DB->get_record('course_completions', ['course' =>$course,'userid'=>$ojt_completion->userid]);
                             if($course_completion && isset($course_completion->id) && $ojt_completion->timemodified!=$course_completion->timecompleted){
