@@ -68,7 +68,7 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'bid': config.ojtid,
                     'userid': config.userid,
                     'id': itemid,
-                    'timemodified':$('.ojt-override-date-input').val()
+                    'timemodified':$(this).closest('.ojt-eval-actions').find('.ojt-override-date-input').val()
                 },
                 beforeSend: function() {
                     ojtobj.replaceIcon(completionimg, 'loading');
@@ -109,7 +109,7 @@ M.mod_ojt_evaluate = M.mod_ojt_evaluate || {
                     'userid': config.userid,
                     'id': itemid,
                     'comment': $(commentinput).val(),
-                    'timemodified':$('.ojt-override-date-input').val()
+                    'timemodified':$(this).closest('.ojt-eval-actions').find('.ojt-override-date-input').val()
                 },
                 success: function(data) {
 

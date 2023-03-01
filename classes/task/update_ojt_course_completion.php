@@ -53,23 +53,24 @@ class update_ojt_course_completion extends \core\task\scheduled_task {
         $ojt_courses = $DB->get_records('course_completion_criteria', array('module' =>$completion_type));
 
         foreach ($ojt_courses as $ojt_course){
-            $course = $ojt_course->course;
+          
             $course = $ojt_course->course;
             $course_compl_criterias = $DB->get_records_sql("SELECT * FROM {course_completion_criteria} WHERE course ={$course} AND `module` is NOT NULL AND moduleinstance IS NOT NULL");
 
 
             if($course_compl_criterias && count($course_compl_criterias)==1){
 
-
+              
 
 
                 $ojt = $DB->get_record('ojt',['course'=>$course]);
                 if($ojt && isset($ojt->id) && $ojt->id>0){
-
-                    $ojt_completions = $DB->get_records('ojt_completion',['ojtid'=>2,'type'=>OJT_CTYPE_TOPICITEM,'status'=>OJT_COMPLETE],'timemodified DESC','*',0,1);
-                    if($ojt_completions && count($ojt_completions)){
-                        $ojt_completion = current($ojt_completions);
-                        if($ojt_completion && isset($ojt_completion->userid) && $ojt_completion->userid >0){
+             
+                
+                    $ojt_completions = $DB->get_records_sql("SELECT id,ojtid,userid,type,status, MAX(timemodified) AS timemodified  FROM {ojt_completion} WHERE ojtid={$ojt->id} AND `type`=2 AND status =2 GROUP BY  userid");
+                    
+                    foreach ($ojt_completions as $ojt_completion){
+                        if($ojt_completion && isset($ojt_completion->userid) && $ojt_completion->userid >0 && isset($ojt_completion->timemodified)){
                             $course_completion  = $DB->get_record('course_completions', ['course' =>$course,'userid'=>$ojt_completion->userid]);
                             if($course_completion && isset($course_completion->id) && $ojt_completion->timemodified!=$course_completion->timecompleted){
                                 $param = array();
@@ -92,7 +93,7 @@ class update_ojt_course_completion extends \core\task\scheduled_task {
                                 $course_completion_backup['timestarted'] =$course_completion->timestarted;
                                 $course_completion_backup['timecompleted'] =$course_completion->timecompleted;
                                 $course_completion_backup['reaggregate'] =$course_completion->reaggregate;
-                                print_r("Coureses\n");
+                            
                                 try {
                                     $DB->insert_record('ojt_course_completions', $course_completion_backup);
                                 }catch (\Exception $e){
@@ -103,8 +104,9 @@ class update_ojt_course_completion extends \core\task\scheduled_task {
 
                             }
 
-                        }
+                        }  
                     }
+                   
                 }
 
 
